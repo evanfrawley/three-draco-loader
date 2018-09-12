@@ -99,7 +99,7 @@ var _DRACOLoader = (function() {
       decodeDracoFile: function(rawBuffer, callback, attributeUniqueIdMap,
                                 attributeTypeMap) {
         var scope = this;
-        DRACOLoader.getDecoderModule()
+        this.getDecoderModule()
             .then( function ( module ) {
               scope.decodeDracoFileInternal( rawBuffer, module.decoder, callback,
                 attributeUniqueIdMap || {}, attributeTypeMap || {});
@@ -382,7 +382,7 @@ var _DRACOLoader = (function() {
       },
 
       isVersionSupported: function(version, callback) {
-          DRACOLoader.getDecoderModule()
+          this.getDecoderModule()
               .then( function ( module ) {
                 callback( module.decoder.isVersionSupported( version ) );
               });
@@ -395,16 +395,16 @@ var _DRACOLoader = (function() {
       }
   };
 
-  DRACOLoader.decoderPath = './';
-  DRACOLoader.decoderConfig = {};
-  DRACOLoader.decoderModulePromise = null;
+  decoderPath = './';
+  decoderConfig = {};
+  decoderModulePromise = null;
 
   /**
    * Sets the base path for decoder source files.
    * @param {string} path
    */
-  DRACOLoader.setDecoderPath = function ( path ) {
-    DRACOLoader.decoderPath = path;
+  function setDecoderPath ( path ) {
+    this.decoderPath = path;
   };
 
   /**
@@ -412,21 +412,21 @@ var _DRACOLoader = (function() {
    * will be recreated with the next decoding call.
    * @param {Object} config
    */
-  DRACOLoader.setDecoderConfig = function ( config ) {
-    var wasmBinary = DRACOLoader.decoderConfig.wasmBinary;
-    DRACOLoader.decoderConfig = config || {};
-    DRACOLoader.releaseDecoderModule();
+  function setDecoderConfig ( config ) {
+    var wasmBinary = this.decoderConfig.wasmBinary;
+    this.decoderConfig = config || {};
+    this..releaseDecoderModule();
 
     // Reuse WASM binary.
-    if ( wasmBinary ) DRACOLoader.decoderConfig.wasmBinary = wasmBinary;
+    if ( wasmBinary ) this..decoderConfig.wasmBinary = wasmBinary;
   };
 
   /**
    * Releases the singleton DracoDecoderModule instance. Module will be recreated
    * with the next decoding call.
    */
-  DRACOLoader.releaseDecoderModule = function () {
-    DRACOLoader.decoderModulePromise = null;
+   function releaseDecoderModule  () {
+    this.decoderModulePromise = null;
   };
 
   /**
@@ -435,11 +435,11 @@ var _DRACOLoader = (function() {
    * module is available.
    * @return {Promise<{decoder: DracoDecoderModule}>}
    */
-  DRACOLoader.getDecoderModule = function () {
+  function getDecoderModule  () {
     var scope = this;
-    var path = DRACOLoader.decoderPath;
-    var config = DRACOLoader.decoderConfig;
-    var promise = DRACOLoader.decoderModulePromise;
+    var path = this.decoderPath;
+    var config = this.decoderConfig;
+    var promise = this.decoderModulePromise;
 
     if ( promise ) return promise;
 
@@ -449,13 +449,13 @@ var _DRACOLoader = (function() {
       promise = Promise.resolve();
     } else if ( typeof WebAssembly !== 'object' || config.type === 'js' ) {
       // Load with asm.js.
-      promise = DRACOLoader._loadScript( path + 'draco_decoder.js' );
+      promise = this._loadScript( path + 'draco_decoder.js' );
     } else {
       // Load with WebAssembly.
       config.wasmBinaryFile = path + 'draco_decoder.wasm';
-      promise = DRACOLoader._loadScript( path + 'draco_wasm_wrapper.js' )
+      promise = this._loadScript( path + 'draco_wasm_wrapper.js' )
           .then( function () {
-            return DRACOLoader._loadArrayBuffer( config.wasmBinaryFile );
+            return this._loadArrayBuffer( config.wasmBinaryFile );
           } )
           .then( function ( wasmBinary ) {
             config.wasmBinary = wasmBinary;
@@ -474,7 +474,7 @@ var _DRACOLoader = (function() {
       } );
     } );
 
-    DRACOLoader.decoderModulePromise = promise;
+    this.decoderModulePromise = promise;
     return promise;
   };
 
@@ -482,7 +482,7 @@ var _DRACOLoader = (function() {
    * @param {string} src
    * @return {Promise}
    */
-  DRACOLoader._loadScript = function ( src ) {
+  function _loadScript ( src ) {
     var prevScript = document.getElementById( 'decoder_script' );
     if ( prevScript !== null ) {
       prevScript.parentNode.removeChild( prevScript );
@@ -502,7 +502,7 @@ var _DRACOLoader = (function() {
    * @param {string} src
    * @return {Promise}
    */
-  DRACOLoader._loadArrayBuffer = function ( src ) {
+  function _loadArrayBuffer ( src ) {
     var loader = new THREE.FileLoader();
     loader.setResponseType( 'arraybuffer' );
     return new Promise( function( resolve, reject ) {
