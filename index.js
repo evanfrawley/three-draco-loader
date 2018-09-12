@@ -510,7 +510,7 @@ var _DRACOLoader = (function () {
         });
     };
 
-    return DracoLoader;
+    return DRACOLoader;
 })();
 
 module.exports = _DRACOLoader;
