@@ -16,6 +16,20 @@
 var THREE = require("three");
 
 var _DRACOLoader = (function () {
+    // Copyright 2016 The Draco Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
     function DRACOLoader(manager) {
         this.timeLoaded = 0;
         this.manager = manager || THREE.DefaultLoadingManager;
@@ -25,10 +39,10 @@ var _DRACOLoader = (function () {
         this.drawMode = THREE.TrianglesDrawMode;
         // Native Draco attribute type to Three.JS attribute type.
         this.nativeAttributeMap = {
-            'position': 'POSITION',
-            'normal': 'NORMAL',
-            'color': 'COLOR',
-            'uv': 'TEX_COORD'
+            'position' : 'POSITION',
+            'normal' : 'NORMAL',
+            'color' : 'COLOR',
+            'uv' : 'TEX_COORD'
         };
     };
 
@@ -36,22 +50,22 @@ var _DRACOLoader = (function () {
 
         constructor: DRACOLoader,
 
-        load: function (url, onLoad, onProgress, onError) {
+        load: function(url, onLoad, onProgress, onError) {
             var scope = this;
             var loader = new THREE.FileLoader(scope.manager);
             loader.setPath(this.path);
             loader.setResponseType('arraybuffer');
-            loader.load(url, function (blob) {
+            loader.load(url, function(blob) {
                 scope.decodeDracoFile(blob, onLoad);
             }, onProgress, onError);
         },
 
-        setPath: function (value) {
+        setPath: function(value) {
             this.path = value;
             return this;
         },
 
-        setVerbosity: function (level) {
+        setVerbosity: function(level) {
             this.verbosity = level;
             return this;
         },
@@ -62,7 +76,7 @@ var _DRACOLoader = (function () {
          *      THREE.TrianglesDrawMode
          *      THREE.TriangleStripDrawMode
          */
-        setDrawMode: function (drawMode) {
+        setDrawMode: function(drawMode) {
             this.drawMode = drawMode;
             return this;
         },
@@ -73,7 +87,7 @@ var _DRACOLoader = (function () {
          * The only currently supported |attributeName| is 'position', more may be
          * added in future.
          */
-        setSkipDequantization: function (attributeName, skip) {
+        setSkipDequantization: function(attributeName, skip) {
             var skipDequantization = true;
             if (typeof skip !== 'undefined')
                 skipDequantization = skip;
@@ -96,18 +110,18 @@ var _DRACOLoader = (function () {
          * The format is:
          *     attributeUniqueIdMap[attributeName] = attributeId
          */
-        decodeDracoFile: function (rawBuffer, callback, attributeUniqueIdMap,
-                                   attributeTypeMap) {
+        decodeDracoFile: function(rawBuffer, callback, attributeUniqueIdMap,
+                                  attributeTypeMap) {
             var scope = this;
-            this.getDecoderModule()
-                .then(function (module) {
-                    scope.decodeDracoFileInternal(rawBuffer, module.decoder, callback,
+            DRACOLoader.getDecoderModule()
+                .then( function ( module ) {
+                    scope.decodeDracoFileInternal( rawBuffer, module.decoder, callback,
                         attributeUniqueIdMap || {}, attributeTypeMap || {});
                 });
         },
 
-        decodeDracoFileInternal: function (rawBuffer, dracoDecoder, callback,
-                                           attributeUniqueIdMap, attributeTypeMap) {
+        decodeDracoFileInternal: function(rawBuffer, dracoDecoder, callback,
+                                          attributeUniqueIdMap, attributeTypeMap) {
             /*
              * Here is how to use Draco Javascript decoder and get the geometry.
              */
@@ -136,9 +150,9 @@ var _DRACOLoader = (function () {
                 geometryType, buffer, attributeUniqueIdMap, attributeTypeMap));
         },
 
-        addAttributeToGeometry: function (dracoDecoder, decoder, dracoGeometry,
-                                          attributeName, attributeType, attribute,
-                                          geometry, geometryBuffer) {
+        addAttributeToGeometry: function(dracoDecoder, decoder, dracoGeometry,
+                                         attributeName, attributeType, attribute,
+                                         geometry, geometryBuffer) {
             if (attribute.ptr === 0) {
                 var errorMsg = 'DRACOLoader: No attribute ' + attributeName;
                 console.error(errorMsg);
@@ -151,21 +165,21 @@ var _DRACOLoader = (function () {
             var attributeData;
             var TypedBufferAttribute;
 
-            switch (attributeType) {
+            switch ( attributeType ) {
 
                 case Float32Array:
                     attributeData = new dracoDecoder.DracoFloat32Array();
                     decoder.GetAttributeFloatForAllPoints(
                         dracoGeometry, attribute, attributeData);
-                    geometryBuffer[attributeName] = new Float32Array(numValues);
+                    geometryBuffer[ attributeName ] = new Float32Array( numValues );
                     TypedBufferAttribute = THREE.Float32BufferAttribute;
                     break;
 
                 case Int8Array:
                     attributeData = new dracoDecoder.DracoInt8Array();
                     decoder.GetAttributeInt8ForAllPoints(
-                        dracoGeometry, attribute, attributeData);
-                    geometryBuffer[attributeName] = new Int8Array(numValues);
+                        dracoGeometry, attribute, attributeData );
+                    geometryBuffer[ attributeName ] = new Int8Array( numValues );
                     TypedBufferAttribute = THREE.Int8BufferAttribute;
                     break;
 
@@ -173,7 +187,7 @@ var _DRACOLoader = (function () {
                     attributeData = new dracoDecoder.DracoInt16Array();
                     decoder.GetAttributeInt16ForAllPoints(
                         dracoGeometry, attribute, attributeData);
-                    geometryBuffer[attributeName] = new Int16Array(numValues);
+                    geometryBuffer[ attributeName ] = new Int16Array( numValues );
                     TypedBufferAttribute = THREE.Int16BufferAttribute;
                     break;
 
@@ -181,7 +195,7 @@ var _DRACOLoader = (function () {
                     attributeData = new dracoDecoder.DracoInt32Array();
                     decoder.GetAttributeInt32ForAllPoints(
                         dracoGeometry, attribute, attributeData);
-                    geometryBuffer[attributeName] = new Int32Array(numValues);
+                    geometryBuffer[ attributeName ] = new Int32Array( numValues );
                     TypedBufferAttribute = THREE.Int32BufferAttribute;
                     break;
 
@@ -189,7 +203,7 @@ var _DRACOLoader = (function () {
                     attributeData = new dracoDecoder.DracoUInt8Array();
                     decoder.GetAttributeUInt8ForAllPoints(
                         dracoGeometry, attribute, attributeData);
-                    geometryBuffer[attributeName] = new Uint8Array(numValues);
+                    geometryBuffer[ attributeName ] = new Uint8Array( numValues );
                     TypedBufferAttribute = THREE.Uint8BufferAttribute;
                     break;
 
@@ -197,7 +211,7 @@ var _DRACOLoader = (function () {
                     attributeData = new dracoDecoder.DracoUInt16Array();
                     decoder.GetAttributeUInt16ForAllPoints(
                         dracoGeometry, attribute, attributeData);
-                    geometryBuffer[attributeName] = new Uint16Array(numValues);
+                    geometryBuffer[ attributeName ] = new Uint16Array( numValues );
                     TypedBufferAttribute = THREE.Uint16BufferAttribute;
                     break;
 
@@ -205,14 +219,14 @@ var _DRACOLoader = (function () {
                     attributeData = new dracoDecoder.DracoUInt32Array();
                     decoder.GetAttributeUInt32ForAllPoints(
                         dracoGeometry, attribute, attributeData);
-                    geometryBuffer[attributeName] = new Uint32Array(numValues);
+                    geometryBuffer[ attributeName ] = new Uint32Array( numValues );
                     TypedBufferAttribute = THREE.Uint32BufferAttribute;
                     break;
 
                 default:
                     var errorMsg = 'DRACOLoader: Unexpected attribute type.';
-                    console.error(errorMsg);
-                    throw new Error(errorMsg);
+                    console.error( errorMsg );
+                    throw new Error( errorMsg );
 
             }
 
@@ -227,9 +241,9 @@ var _DRACOLoader = (function () {
             dracoDecoder.destroy(attributeData);
         },
 
-        convertDracoGeometryTo3JS: function (dracoDecoder, decoder, geometryType,
-                                             buffer, attributeUniqueIdMap,
-                                             attributeTypeMap) {
+        convertDracoGeometryTo3JS: function(dracoDecoder, decoder, geometryType,
+                                            buffer, attributeUniqueIdMap,
+                                            attributeTypeMap) {
             if (this.getAttributeOptions('position').skipDequantization === true) {
                 decoder.SkipAttributeTransform(dracoDecoder.POSITION);
             }
@@ -349,7 +363,7 @@ var _DRACOLoader = (function () {
 
             geometry.drawMode = this.drawMode;
             if (geometryType == dracoDecoder.TRIANGULAR_MESH) {
-                geometry.setIndex(new (geometryBuffer.indices.length > 65535 ?
+                geometry.setIndex(new(geometryBuffer.indices.length > 65535 ?
                     THREE.Uint32BufferAttribute : THREE.Uint16BufferAttribute)
                 (geometryBuffer.indices, 1));
             }
@@ -381,30 +395,30 @@ var _DRACOLoader = (function () {
             return geometry;
         },
 
-        isVersionSupported: function (version, callback) {
-            this.getDecoderModule()
-                .then(function (module) {
-                    callback(module.decoder.isVersionSupported(version));
+        isVersionSupported: function(version, callback) {
+            DRACOLoader.getDecoderModule()
+                .then( function ( module ) {
+                    callback( module.decoder.isVersionSupported( version ) );
                 });
         },
 
-        getAttributeOptions: function (attributeName) {
+        getAttributeOptions: function(attributeName) {
             if (typeof this.attributeOptions[attributeName] === 'undefined')
                 this.attributeOptions[attributeName] = {};
             return this.attributeOptions[attributeName];
         }
     };
 
-    this.decoderPath = './';
-    this.decoderConfig = {};
-    this.decoderModulePromise = null;
+    DRACOLoader.decoderPath = './';
+    DRACOLoader.decoderConfig = {};
+    DRACOLoader.decoderModulePromise = null;
 
     /**
      * Sets the base path for decoder source files.
      * @param {string} path
      */
-    function setDecoderPath(path) {
-        this.decoderPath = path;
+    DRACOLoader.setDecoderPath = function ( path ) {
+        DRACOLoader.decoderPath = path;
     };
 
     /**
@@ -412,21 +426,21 @@ var _DRACOLoader = (function () {
      * will be recreated with the next decoding call.
      * @param {Object} config
      */
-    function setDecoderConfig(config) {
-        var wasmBinary = this.decoderConfig.wasmBinary;
-        this.decoderConfig = config || {};
-        this.releaseDecoderModule();
+    DRACOLoader.setDecoderConfig = function ( config ) {
+        var wasmBinary = DRACOLoader.decoderConfig.wasmBinary;
+        DRACOLoader.decoderConfig = config || {};
+        DRACOLoader.releaseDecoderModule();
 
         // Reuse WASM binary.
-        if (wasmBinary) this.decoderConfig.wasmBinary = wasmBinary;
+        if ( wasmBinary ) DRACOLoader.decoderConfig.wasmBinary = wasmBinary;
     };
 
     /**
      * Releases the singleton DracoDecoderModule instance. Module will be recreated
      * with the next decoding call.
      */
-    function releaseDecoderModule() {
-        this.decoderModulePromise = null;
+    DRACOLoader.releaseDecoderModule = function () {
+        DRACOLoader.decoderModulePromise = null;
     };
 
     /**
@@ -435,46 +449,46 @@ var _DRACOLoader = (function () {
      * module is available.
      * @return {Promise<{decoder: DracoDecoderModule}>}
      */
-    function getDecoderModule() {
+    DRACOLoader.getDecoderModule = function () {
         var scope = this;
-        var path = this.decoderPath;
-        var config = this.decoderConfig;
-        var promise = this.decoderModulePromise;
+        var path = DRACOLoader.decoderPath;
+        var config = DRACOLoader.decoderConfig;
+        var promise = DRACOLoader.decoderModulePromise;
 
-        if (promise) return promise;
+        if ( promise ) return promise;
 
         // Load source files.
-        if (typeof DracoDecoderModule !== 'undefined') {
+        if ( typeof DracoDecoderModule !== 'undefined' ) {
             // Loaded externally.
             promise = Promise.resolve();
-        } else if (typeof WebAssembly !== 'object' || config.type === 'js') {
+        } else if ( typeof WebAssembly !== 'object' || config.type === 'js' ) {
             // Load with asm.js.
-            promise = this._loadScript(path + 'draco_decoder.js');
+            promise = DRACOLoader._loadScript( path + 'draco_decoder.js' );
         } else {
             // Load with WebAssembly.
             config.wasmBinaryFile = path + 'draco_decoder.wasm';
-            promise = this._loadScript(path + 'draco_wasm_wrapper.js')
-                .then(function () {
-                    return this._loadArrayBuffer(config.wasmBinaryFile);
-                })
-                .then(function (wasmBinary) {
+            promise = DRACOLoader._loadScript( path + 'draco_wasm_wrapper.js' )
+                .then( function () {
+                    return DRACOLoader._loadArrayBuffer( config.wasmBinaryFile );
+                } )
+                .then( function ( wasmBinary ) {
                     config.wasmBinary = wasmBinary;
-                });
+                } );
         }
 
         // Wait for source files, then create and return a decoder.
-        promise = promise.then(function () {
-            return new Promise(function (resolve) {
-                config.onModuleLoaded = function (decoder) {
+        promise = promise.then( function () {
+            return new Promise( function ( resolve ) {
+                config.onModuleLoaded = function ( decoder ) {
                     scope.timeLoaded = performance.now();
                     // Module is Promise-like. Wrap before resolving to avoid loop.
-                    resolve({decoder: decoder});
+                    resolve( { decoder: decoder } );
                 };
-                DracoDecoderModule(config);
-            });
-        });
+                DracoDecoderModule( config );
+            } );
+        } );
 
-        this.decoderModulePromise = promise;
+        DRACOLoader.decoderModulePromise = promise;
         return promise;
     };
 
@@ -482,19 +496,19 @@ var _DRACOLoader = (function () {
      * @param {string} src
      * @return {Promise}
      */
-    function _loadScript(src) {
-        var prevScript = document.getElementById('decoder_script');
-        if (prevScript !== null) {
-            prevScript.parentNode.removeChild(prevScript);
+    DRACOLoader._loadScript = function ( src ) {
+        var prevScript = document.getElementById( 'decoder_script' );
+        if ( prevScript !== null ) {
+            prevScript.parentNode.removeChild( prevScript );
         }
-        var head = document.getElementsByTagName('head')[0];
-        var script = document.createElement('script');
+        var head = document.getElementsByTagName( 'head' )[ 0 ];
+        var script = document.createElement( 'script' );
         script.id = 'decoder_script';
         script.type = 'text/javascript';
         script.src = src;
-        return new Promise(function (resolve) {
+        return new Promise( function ( resolve ) {
             script.onload = resolve;
-            head.appendChild(script);
+            head.appendChild( script );
         });
     };
 
@@ -502,15 +516,14 @@ var _DRACOLoader = (function () {
      * @param {string} src
      * @return {Promise}
      */
-    function _loadArrayBuffer(src) {
+    DRACOLoader._loadArrayBuffer = function ( src ) {
         var loader = new THREE.FileLoader();
-        loader.setResponseType('arraybuffer');
-        return new Promise(function (resolve, reject) {
-            loader.load(src, resolve, undefined, reject);
+        loader.setResponseType( 'arraybuffer' );
+        return new Promise( function( resolve, reject ) {
+            loader.load( src, resolve, undefined, reject );
         });
     };
-
-    return DRACOLoader;
+    return DRACOLoader
 })();
 
 module.exports = _DRACOLoader;
