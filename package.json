@@ -1,0 +1,11 @@
+{
+  "name": "three-draco-loader",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/evanfrawley/three-draco-loader.git",
+  "author": "evanfrawley <frawley@uw.edu>",
+  "license": "MIT",
+  "dependencies": {
+    "three": "^0.96.0"
+  }
+}
