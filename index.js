@@ -96,6 +96,12 @@ var _DRACOLoader = (function () {
             return this;
         },
 
+        setMaterials: function ( materials ) {
+            this.materials = materials;
+            return this;
+        },
+
+
         /**
          * |attributeUniqueIdMap| specifies attribute unique id for an attribute in
          * the geometry to be decoded. The name of the attribute must be one of the
