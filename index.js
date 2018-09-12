@@ -449,8 +449,7 @@ var _DRACOLoader = (function () {
      * module is available.
      * @return {Promise<{decoder: DracoDecoderModule}>}
      */
-    DRACOLoader.prototype.getDecoderModule =  () => {
-        console.log(this);
+    DRACOLoader.prototype.getDecoderModule =  function() {
         var scope = this;
         var path = this.decoderPath;
         var config = this.decoderConfig;
@@ -464,13 +463,13 @@ var _DRACOLoader = (function () {
             promise = Promise.resolve();
         } else if ( typeof WebAssembly !== 'object' || config.type === 'js' ) {
             // Load with asm.js.
-            promise = this._loadScript( path + 'draco_decoder.js' );
+            promise = DRACOLoader.prototype._loadScript( path + 'draco_decoder.js' );
         } else {
             // Load with WebAssembly.
             config.wasmBinaryFile = path + 'draco_decoder.wasm';
-            promise = this._loadScript( path + 'draco_wasm_wrapper.js' )
+            promise = DRACOLoader.prototype._loadScript( path + 'draco_wasm_wrapper.js' )
                 .then( function () {
-                    return this._loadArrayBuffer( config.wasmBinaryFile );
+                    return DRACOLoader.prototype._loadArrayBuffer( config.wasmBinaryFile );
                 } )
                 .then( function ( wasmBinary ) {
                     config.wasmBinary = wasmBinary;
