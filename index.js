@@ -15,7 +15,7 @@
 
 var THREE = require("three");
 
-var _DRACOLoader = (() => {
+var _DRACOLoader = (function () {
     function DRACOLoader(manager) {
         this.timeLoaded = 0;
         this.manager = manager || THREE.DefaultLoadingManager;
@@ -403,7 +403,7 @@ var _DRACOLoader = (() => {
      * Sets the base path for decoder source files.
      * @param {string} path
      */
-    setDecoderPath = (path) => {
+    function setDecoderPath(path) {
         this.decoderPath = path;
     };
 
@@ -412,7 +412,7 @@ var _DRACOLoader = (() => {
      * will be recreated with the next decoding call.
      * @param {Object} config
      */
-    setDecoderConfig = (config) => {
+    function setDecoderConfig(config) {
         var wasmBinary = this.decoderConfig.wasmBinary;
         this.decoderConfig = config || {};
         this.releaseDecoderModule();
@@ -425,7 +425,7 @@ var _DRACOLoader = (() => {
      * Releases the singleton DracoDecoderModule instance. Module will be recreated
      * with the next decoding call.
      */
-    releaseDecoderModule = () => {
+    function releaseDecoderModule() {
         this.decoderModulePromise = null;
     };
 
@@ -435,7 +435,7 @@ var _DRACOLoader = (() => {
      * module is available.
      * @return {Promise<{decoder: DracoDecoderModule}>}
      */
-    getDecoderModule = () => {
+    function getDecoderModule() {
         var scope = this;
         var path = this.decoderPath;
         var config = this.decoderConfig;
@@ -482,7 +482,7 @@ var _DRACOLoader = (() => {
      * @param {string} src
      * @return {Promise}
      */
-     _loadScript = (src) => {
+    function _loadScript(src) {
         var prevScript = document.getElementById('decoder_script');
         if (prevScript !== null) {
             prevScript.parentNode.removeChild(prevScript);
@@ -502,13 +502,15 @@ var _DRACOLoader = (() => {
      * @param {string} src
      * @return {Promise}
      */
-     _loadArrayBuffer =(src) => {
+    function _loadArrayBuffer(src) {
         var loader = new THREE.FileLoader();
         loader.setResponseType('arraybuffer');
         return new Promise(function (resolve, reject) {
             loader.load(src, resolve, undefined, reject);
         });
     };
+
+    return DracoLoader;
 })();
 
 module.exports = _DRACOLoader;
