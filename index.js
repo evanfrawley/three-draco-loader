@@ -449,7 +449,8 @@ var _DRACOLoader = (function () {
      * module is available.
      * @return {Promise<{decoder: DracoDecoderModule}>}
      */
-    DRACOLoader.prototype.getDecoderModule = function () {
+    DRACOLoader.prototype.getDecoderModule =  () => {
+        console.log(this);
         var scope = this;
         var path = this.decoderPath;
         var config = this.decoderConfig;
