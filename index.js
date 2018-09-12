@@ -418,7 +418,7 @@ var _DRACOLoader = (function () {
      * @param {string} path
      */
     DRACOLoader.prototype.setDecoderPath = function ( path ) {
-        this.decoderPath = path;
+        DRACOLoader.prototype.decoderPath = path;
     };
 
     /**
@@ -427,12 +427,12 @@ var _DRACOLoader = (function () {
      * @param {Object} config
      */
     DRACOLoader.prototype.setDecoderConfig = function ( config ) {
-        var wasmBinary = this.decoderConfig.wasmBinary;
-        this.decoderConfig = config || {};
-        this.releaseDecoderModule();
+        var wasmBinary = DRACOLoader.prototype.decoderConfig.wasmBinary;
+        DRACOLoader.prototype.decoderConfig = config || {};
+        DRACOLoader.prototype.releaseDecoderModule();
 
         // Reuse WASM binary.
-        if ( wasmBinary ) this.decoderConfig.wasmBinary = wasmBinary;
+        if ( wasmBinary ) DRACOLoader.prototype.decoderConfig.wasmBinary = wasmBinary;
     };
 
     /**
@@ -451,9 +451,9 @@ var _DRACOLoader = (function () {
      */
     DRACOLoader.prototype.getDecoderModule =  function() {
         var scope = this;
-        var path = this.decoderPath;
-        var config = this.decoderConfig;
-        var promise = this.decoderModulePromise;
+        var path = DRACOLoader.prototype.decoderPath;
+        var config = DRACOLoader.prototype.decoderConfig;
+        var promise = DRACOLoader.prototype.decoderModulePromise;
 
         if ( promise ) return promise;
 
@@ -488,7 +488,7 @@ var _DRACOLoader = (function () {
             } );
         } );
 
-        this.decoderModulePromise = promise;
+        DRACOLoader.prototype.decoderModulePromise = promise;
         return promise;
     };
 
